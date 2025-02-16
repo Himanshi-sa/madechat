@@ -1,4 +1,3 @@
-// console.log(Bun.env.PORT);
 import http from "node:http";
 import express from "express";
 import { Server } from "socket.io";
@@ -10,6 +9,13 @@ const server = http.createServer(app);
 
 app.get("/", (req, res) => {
   res.send("Socket.io server is healthy!");
+});
+
+// SOCKET.io
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log(`Socket connected with id: ${socket.id}`);
 });
 
 server.listen(PORT, () => {
