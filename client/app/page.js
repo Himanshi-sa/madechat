@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Button, HeroUIProvider } from "@heroui/react";
+import { useEffect, useState } from "react";
+import { HeroUIProvider } from "@heroui/react";
 import { Inputs, SignUp, Messages } from "@/components";
 import { io } from "socket.io-client";
 
@@ -10,14 +10,21 @@ const socket = io(
 
 export default function Home() {
   const [user, setUser] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on("new_message", (message) => {
+      setMessages((prevState) => [...prevState, message]);
+    });
+  }, []);
 
   return (
     <HeroUIProvider>
       <div>
         {user ? (
           <>
-            <Messages />
-            < Inputs/>
+            <Messages messages={messages} id={socket.id} />
+            <Inputs socket={socket} user={user} setMessages={setMessages} />
           </>
         ) : (
           <SignUp setUser={setUser} socket={socket} />
